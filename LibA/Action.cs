@@ -1,8 +1,9 @@
 ﻿namespace Lib;
+using Common;
 public class Action
 {
-    public void Execute()
+    public void Execute(Context context)
     {
-        new Printer().Print();
+        new Printer().Print(context.Value);
     }
 }
