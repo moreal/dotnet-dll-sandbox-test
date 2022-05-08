@@ -1,6 +1,6 @@
 ﻿namespace Lib;
 using Common;
-public class Action
+public class Action : IAction
 {
     public void Execute(Context context)
     {

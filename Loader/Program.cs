@@ -1,12 +1,14 @@
 ﻿using System.Reflection;
+using System.Runtime.Loader;
 
 var context = new ContextImpl(10);
 
-var liba = Assembly.LoadFile(Path.GetFullPath("../../../../out/liba/LibA.dll"));
-var libb = Assembly.LoadFile(Path.GetFullPath("../../../../out/libb/LibB.dll"));
+var liba = Assembly.LoadFile(Path.GetFullPath("out/liba/LibA.dll"));
 
-var instanceA = Activator.CreateInstance(liba.GetType("Lib.Action")); 
-instanceA.GetType().InvokeMember("Execute", BindingFlags.InvokeMethod, null, instanceA, new[] { context });
+var instanceA = (Common.IAction)Activator.CreateInstance(liba.GetType("Lib.Action")); 
+instanceA.Execute(context);
 
-var instanceB = Activator.CreateInstance(libb.GetType("Lib.Action")); 
-instanceB.GetType().InvokeMember("Execute", BindingFlags.InvokeMethod, null, instanceB, new[] { context });
+var ctx = new AssemblyLoadContext("name", true);
+ctx.LoadFromAssemblyPath(Path.GetFullPath("out/libb/LibB.dll"));
+var instanceB = (Common.IAction)Activator.CreateInstance(ctx.Assemblies.First().GetType("Lib.Action"));
+instanceB.Execute(context);
